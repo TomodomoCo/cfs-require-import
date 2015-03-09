@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Require Custom Field Suite
+Plugin Name: Custom Field Suite: Require & Import
 Plugin URI: https://www.vanpattenmedia.com/
 Description: Plugin boilerplate to require Custom Field Suite and import custom fields on activation
 Version: 1.0
@@ -8,7 +8,7 @@ Author: Chris Van Patten / Van Patten Media Inc.
 Author URI: https://www.vanpattenmedia.com/
 */
 
-class CfsPluginDemo {
+class CfsRequireImport {
 
 	function __construct() {
 		register_activation_hook( plugin_basename( __FILE__ ), array( $this, 'import_cfs_fields' ) );
@@ -23,6 +23,7 @@ class CfsPluginDemo {
 
 		$result = CFS()->field_group->import( $options );
 
+		// FIXME
 		add_action( 'admin_notices', function() {
 			echo '<div class="updated"><p>' . strip_tags( $result ) . '</p></div>';
 		} );
