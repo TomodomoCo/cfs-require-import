@@ -24,9 +24,9 @@ class CfsRequireImport {
 			'import_code' => json_decode( $fields , true ),
 		);
 
-		$this->result = CFS()->field_group->import( $options );
+		$result = CFS()->field_group->import( $options );
 		
-		set_transient('cfs_import_result', $this->result, 60);
+		set_transient('cfs_import_result', $result, 60);
 	}
 	
 	public static function print_import_notice() {
