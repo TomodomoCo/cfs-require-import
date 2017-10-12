@@ -8,32 +8,41 @@ Author: Chris Van Patten / Van Patten Media Inc.
 Author URI: https://www.vanpattenmedia.com/
 */
 
+include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+
 class CfsRequireImport {
+	
+	private $result = 'blank';
 
 	function __construct() {
 		register_activation_hook( plugin_basename( __FILE__ ), array( $this, 'import_cfs_fields' ) );
+		add_action('admin_notices', array( $this, 'print_import_notice'));
 	}
 
-	public static function import_cfs_fields() {
+	public function import_cfs_fields() {
 		$fields = file_get_contents( trailingslashit( dirname( __FILE__ ) ) . 'fields.json' );
 
 		$options = array(
-			'import_code' => json_decode( stripslashes( $fields ), true ),
+			'import_code' => json_decode( $fields , true ),
 		);
 
-		$result = CFS()->field_group->import( $options );
-
-		// FIXME
-		add_action( 'admin_notices', function() {
-			echo '<div class="updated"><p>' . strip_tags( $result ) . '</p></div>';
-		} );
+		$this->result = CFS()->field_group->import( $options );
+		
+		set_transient('cfs_import_result', $this->result, 60);
+	}
+	
+	public function print_import_notice() {
+		 if ( get_transient( 'cfs_import_result' ) ) {
+			 echo '<div class="updated"><p>' . get_transient( 'cfs_import_result' ) . '</p></div>';
+			 delete_transient( 'cfs_import_result' );
+		 }
 	}
 }
 
 
-if ( class_exists( 'Custom_Field_Suite' ) ) {
+if ( is_plugin_active('custom-field-suite/cfs.php') ) {
 
-	new CfsPluginDemo;
+	new CfsRequireImport();
 
 } else {
 
