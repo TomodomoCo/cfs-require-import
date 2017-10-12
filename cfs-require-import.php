@@ -23,8 +23,8 @@ class CfsRequireImport {
 
 		$result = CFS()->field_group->import( $options );
 
-		// FIXME
-		add_action( 'admin_notices', function() {
+		// FIXED
+		add_action( 'admin_notices', function() use ($result){
 			echo '<div class="updated"><p>' . strip_tags( $result ) . '</p></div>';
 		} );
 	}
